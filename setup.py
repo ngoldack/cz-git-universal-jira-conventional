@@ -9,7 +9,7 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
 
 setup(
     name="cz_git_universal_jira_conventional",
-    version="1.1.4",
+    version="1.2.0",
     py_modules=["cz_git_universal_jira_conventional"],
     author="Nicolas Goldack",
     author_email="nicolas-goldack@live.de",
