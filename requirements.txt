@@ -1,6 +1,2 @@
-questionary
-black
-pre-commit
-twine
-setuptools
-wheel
+setuptools~=60.2.0
+commitizen~=2.35.0

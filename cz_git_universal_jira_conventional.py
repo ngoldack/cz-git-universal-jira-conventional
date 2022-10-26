@@ -41,11 +41,10 @@ class GitJiraConventionalCz(BaseCommitizen):
             "Please add the key jira_base_url to your .cz.yaml|json|toml config file."
         )
         quit()
-    if "github_repo" not in conf.settings:
-        print("Please add the key github_repo to your .cz.yaml|json|toml config file.")
+    if "git_commit_base_url" not in conf.settings:
+        print("Please add the key git_commit_base_url to your .cz.yaml|json|toml config file.")
         quit()
     jira_base_url = conf.settings["jira_base_url"]
-    github_repo = conf.settings["github_repo"]
     git_commit_base_url = conf.settings["git_commit_base_url"]
     jira_allow_empty = conf.settings["jira_allow_empty"]
 
@@ -199,6 +198,7 @@ class GitJiraConventionalCz(BaseCommitizen):
         body = answers["body"]
         footer = answers["footer"]
         is_breaking_change = answers["is_breaking_change"]
+        scope = ""
 
         if issues:
             # Add Jira prefixes to the issue numbers.

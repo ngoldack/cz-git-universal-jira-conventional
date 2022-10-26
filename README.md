@@ -1,13 +1,16 @@
-# cz-github-jira-conventional
+# cz-git-universal-jira-conventional
 
-**cz-github-jira-conventional** is a plugin for the [**commitizen tools**](https://github.com/commitizen-tools/commitizen), a toolset that helps you to create [**conventional commit messages**](https://www.conventionalcommits.org/en/v1.0.0/). Since the structure of conventional commits messages is standardized they are machine readable and allow commitizen to automaticially calculate and tag [**semantic version numbers**](https://semver.org/) as well as create **CHANGELOG.md** files for your releases.
+**cz-git-universal-jira-conventional** is a plugin for the [**commitizen tools**](https://github.com/commitizen-tools/commitizen), a toolset that helps you to create [**conventional commit messages**](https://www.conventionalcommits.org/en/v1.0.0/). Since the structure of conventional commits messages is standardized they are machine readable and allow commitizen to automaticially calculate and tag [**semantic version numbers**](https://semver.org/) as well as create **CHANGELOG.md** files for your releases.
 
 This plugin extends the commitizen tools by:
-- **require a Jira issue id** in the commit message
-- **create links to GitHub** commits in the CHANGELOG.md
+- **adding a Jira issue id** in the commit message (can be optional, see config below)
+- **create links to Git-Repository** commits in the CHANGELOG.md
 - **create links to Jira** issues in the CHANGELOG.md
 
-When you call commitizen `commit` you will be required you to enter the scope of your commit as a Jira issue id (or multiple issue ids, prefixed or without prefix, see config below).
+This plugin is a fork of the original [cz-github-jira-conventional plugin](https://github.com/apheris/cz-github-jira-conventional).
+Without it, this plugin would not be possible. It extends it by adding generic git commit path support for different git platforms and the option for leaving the jira issue id empty.
+
+When you call commitizen `commit` you will be prompted to enter the scope of your commit as a Jira issue id (or multiple issue ids, prefixed or without prefix, see config below).
 ```
 > cz commit
 ? Select the type of change you are committing fix: A bug fix. Correlates with PATCH in SemVer
@@ -29,19 +32,19 @@ The changelog created by cz (`cz bump --changelog`)will contain links to the com
 ## Installation
 
 Install with pip
-`python -m pip install cz-github-jira-conventional` 
+`python -m pip install cz-git-universal-jira-conventional` 
 
-You need to use a cz config file that has the **required** additional values `jira_base_url` and `github_repo` and may contain the **optional** value `jira_prefix`.
+You need to use a cz config file that has the **required** additional values `jira_base_url` and `git_commit_base_url` and may contain the **optional** value `jira_prefix`.
 
 Example `.cz.yaml` config for this repository
 ```yaml
 commitizen:
-  name: cz_github_jira_conventional
+  name: cz_git_universal_jira_conventional
   tag_format: v$version
   version: 1.0.0
   jira_prefix: XX-
   jira_base_url: https://myproject.atlassian.net
-  github_repo: apheris/cz-github-jira-conventional
+  git_commit_base_url: https://github.com/ngoldack/cz-git-universal-jira-conventional/commit/
 ```
 
 The `jira_prefix` can be either 
@@ -56,6 +59,15 @@ The `jira_prefix` can be either
     - YY-
 ```
 
+The `jira_allow_empty` can be either
+- `false` (default, a jira issue id is mandatory)
+- `true` (jira issue id is optional and can be omitted)
+
+The `git_commit_base_url` depends on your git platform vendor.
+You want to add an url which can be appended with to commit-sha for reference. Examples:
+- Github: `https://github.com/ngoldack/cz-git-universal-jira-conventional/commit/`
+- Bitbucket (Self-Hosted): `https://bitbucket.example.com/projects/PROJECT-NAME/repos/REPO-NAME/commits/`
+
 ### pre-commit
 Add this plugin to the dependencies of your commit message linting with `pre-commit`. 
 
@@ -67,7 +79,7 @@ repos:
     hooks:
       - id: commitizen
         stages: [commit-msg]
-        additional_dependencies: [cz-github-jira-conventional]
+        additional_dependencies: [cz-git-universal-jira-conventional]
 ```
 Install the hook with 
 ```bash
@@ -77,10 +89,14 @@ pre-commit install --hook-type commit-msg
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
 
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
+This plugin is a fork of the original [cz-github-jira-conventional plugin](https://github.com/apheris/cz-github-jira-conventional).
+Without it, this plugin would not be possible.
+
 This plugin would not have been possible without the fantastic work from:
 * [commitizen tools](https://github.com/commitizen-tools/commitizen)
 * [conventional_JIRA](https://github.com/Crystalix007/conventional_jira)
+* [cz-github-jira-conventional plugin](https://github.com/apheris/cz-github-jira-conventional)

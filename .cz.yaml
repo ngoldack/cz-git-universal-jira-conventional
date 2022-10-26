@@ -1,7 +1,8 @@
 commitizen:
-  github_repo: apheris/cz_github_jira_conventional
+  git_commit_base_url: https://github.com/ngoldack/cz-git-universal-jira-conventional/commit
   jira_base_url: https://myproject.atlassian.net
-  jira_prefix: XX-
-  name: cz_github_jira_conventional
+  jira_prefix:
+  jira_allow_empty: true
+  name: cz_git_universal_jira_conventional
   tag_format: v$version
   version: 1.1.0
