@@ -7,7 +7,7 @@ from commitizen.cz.base import BaseCommitizen
 from commitizen.cz.utils import multiple_line_breaker, required_validator
 from commitizen.cz.exceptions import CzException
 
-__all__ = ["GithubJiraConventionalCz"]
+__all__ = ["GitJiraConventionalCz"]
 
 
 def parse_subject(text):
@@ -17,7 +17,7 @@ def parse_subject(text):
     return required_validator(text, msg="Subject is required.")
 
 
-class GithubJiraConventionalCz(BaseCommitizen):
+class GitJiraConventionalCz(BaseCommitizen):
     bump_pattern = defaults.bump_pattern
     bump_map = defaults.bump_map
     commit_parser = defaults.commit_parser
@@ -46,6 +46,9 @@ class GithubJiraConventionalCz(BaseCommitizen):
         quit()
     jira_base_url = conf.settings["jira_base_url"]
     github_repo = conf.settings["github_repo"]
+    git_commit_base_url = conf.settings["git_commit_base_url"]
+    jira_allow_empty = conf.settings["jira_allow_empty"]
+
     # if "change_type_map" not in conf.settings:
     change_type_map = {
         "feat": "Feat",
@@ -166,9 +169,9 @@ class GithubJiraConventionalCz(BaseCommitizen):
         return questions
 
     def parse_scope(self, text):
-        """
-        Require and validate the scope to be Jira ids.
-        """
+        if self.jira_allow_empty and len(text) == 0:
+            return ""
+
         if self.jira_prefix:
             issueRE = re.compile(r"\d+")
         else:
@@ -254,7 +257,7 @@ class GithubJiraConventionalCz(BaseCommitizen):
     def changelog_message_builder_hook(
         self, parsed_message: dict, commit: git.GitCommit
     ) -> dict:
-        """add github and jira links to the readme"""
+        """add git and jira links to the readme"""
         rev = commit.rev
         m = parsed_message["message"]
         if parsed_message["scope"]:
@@ -264,9 +267,13 @@ class GithubJiraConventionalCz(BaseCommitizen):
                     for issue_id in parsed_message["scope"].split(",")
                 ]
             )
+
+        # Remove trailing slash
+        if self.git_commit_base_url[-1] == "/":
+            self.git_commit_base_url = self.git_commit_base_url[:-1]
         parsed_message[
             "message"
-        ] = f"{m} [{rev[:5]}](https://github.com/{self.github_repo}/commit/{commit.rev})"
+        ] = f"{m} [{rev[:5]}]({self.git_commit_base_url}/{commit.rev})"
         return parsed_message
 
 
@@ -274,4 +281,4 @@ class InvalidAnswerError(CzException):
     ...
 
 
-discover_this = GithubJiraConventionalCz
+discover_this = GitJiraConventionalCz
